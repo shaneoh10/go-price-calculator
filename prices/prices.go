@@ -7,12 +7,12 @@ import (
 	"github.com/shaneoh10/go-price-calculator/filemanager"
 )
 
-const pricesFilePath string = "./prices.txt"
+const pricesFilePath string = "prices.txt"
 
 type TaxIncludedPriceJob struct {
 	TaxRate           float64
 	InputPrices       []float64
-	TaxIncludedPrices map[string]float64
+	TaxIncludedPrices map[string]string
 }
 
 func (job *TaxIncludedPriceJob) LoadData() {
@@ -43,7 +43,8 @@ func (job *TaxIncludedPriceJob) Process() {
 		result[fmt.Sprintf("%.2f", price)] = fmt.Sprintf("%.2f", taxIncludedPrice)
 	}
 
-	fmt.Println(result)
+	job.TaxIncludedPrices = result
+	filemanager.WriteJSON(fmt.Sprintf("result_%v.json", job.TaxRate*100), job)
 }
 
 func NewTaxIncludedPriceJob(taxRate float64) *TaxIncludedPriceJob {
